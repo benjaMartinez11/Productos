@@ -49,9 +49,12 @@ def fetch_dia():
     return results
 #######################################################################
 def fetch_carrefour():
+    from selenium import webdriver
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
+    from bs4 import BeautifulSoup
+    from urllib.parse import urljoin
 
     print("[CARREFOUR] Iniciando extracción...")
     category_url = "https://www.carrefour.com.ar/Bebidas/Gaseosas/Gaseosas-cola"
@@ -67,21 +70,22 @@ def fetch_carrefour():
 
         soup = BeautifulSoup(navagador.page_source, "html.parser")
 
-        # Contenedor principal
+        # Buscar contenedor principal usando solo la clase "pr0"
         container = soup.find("div", class_="pr0 items-stretch vtex-flex-layout-0-x-stretchChildrenWidth   flex")
+
         if not container:
             print("[CARREFOUR] No se encontró el contenedor de productos.")
             navagador.quit()
             return []
 
-        # Productos
-        productos = container.find_all("div", class_="valtech-carrefourar-product-summary-status-0-x-container valtech-carrefourar-product-summary-status-0-x-productNotAdded flex flex-column h-100")
+        # Buscar productos dentro del contenedor
+        productos = container.find_all("div", class_="valtech-carrefourar-product-summary-status-0-x-container")
 
         print(f"[CARREFOUR] Productos encontrados: {len(productos)}")
 
         for product in productos:
             try:
-                # Nombre del producto
+                # Extraer la marca (nombre pedido)
                 name_elem = product.find("div", class_="vtex-product-summary-2-x-productBrand vtex-product-summary-2-x-brandName t-body")
                 name = name_elem.text.strip() if name_elem else "Sin nombre"
 
@@ -110,37 +114,68 @@ def fetch_carrefour():
     return results
 
 
+
 #######################################################################
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
 def fetch_coto():
+    navegador = webdriver.Firefox()
     print("[COTO] Iniciando extracción...")
     category_url = "https://www.cotodigital.com.ar/sitios/cdigi/categoria/catalogo-bebidas-bebidas-sin-alcohol-gaseosas/_/N-n4l4r5"
     results = []
 
-    response = requests.get(category_url, headers=HEADERS)
-    if response.status_code != 200:
-        print("[COTO] Error al obtener la página")
-        return []
+    try:
+        navegador.get(category_url)
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    productos = soup.find_all("div", class_="producto")
+        # Esperar hasta que el contenedor esté presente (máx 15 segundos)
+        WebDriverWait(navegador, 15).until(
+            EC.presence_of_element_located((By.ID, "gallery-layout-container"))
+        )
 
-    for product in productos:
-        try:
-            name_elem = product.find("div", class_="descrip_full")
-            name = name_elem.text.strip() if name_elem else "Sin nombre"
+        soup = BeautifulSoup(navegador.page_source, "html.parser")
+        container = soup.find(id="gallery-layout-container")
 
-            price_elem = product.find("span", class_="atg_store_newPrice")
-            price = price_elem.text.strip() if price_elem else "Sin precio"
+        if not container:
+            print("[COTO] No se encontró el contenedor de productos.")
+            print(navegador.page_source)  # Para debug
+            return []
 
-            link_elem = product.find("a", href=True)
-            relative_url = link_elem["href"] if link_elem else "#"
-            full_url = urljoin(category_url, relative_url)
+        productos = container.find_all("div", class_="product gtm-product ")
 
-            results.append(["COTO", name, price, full_url])
-        except Exception as e:
-            print("Error extrayendo producto Coto:", e)
+        if not productos:
+            print("[COTO] No se encontraron productos.")
+            return []
+
+        for product in productos:
+            try:
+                name_elem = product.find("div", class_="description-product")
+                name = name_elem.text.strip() if name_elem else "Sin nombre"
+
+                price_elem = product.find("span", class_="atg_store_newPrice")
+                price = price_elem.text.strip() if price_elem else "Sin precio"
+
+                link_elem = product.find("a", href=True)
+                relative_url = link_elem["href"] if link_elem else "#"
+                full_url = urljoin(category_url, relative_url)
+
+                results.append(["COTO", name, price, full_url])
+            except Exception as e:
+                print("Error extrayendo producto COTO:", e)
+
+    except Exception as e:
+        print("[COTO] Error cargando la página:", e)
+
+    finally:
+        navegador.quit()
 
     return results
+
+
 #######################################################################
 def save_to_csv(data, filename="precios_supermercados.csv"):
     if not data:
@@ -156,7 +191,7 @@ def main():
 
     all_data.extend(fetch_dia())
     all_data.extend(fetch_carrefour())
-    # all_data.extend(fetch_coto())
+    all_data.extend(fetch_coto())
 
     print(f"[MAIN] Total de registros: {len(all_data)}")
     save_to_csv(all_data)
