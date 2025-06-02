@@ -153,11 +153,11 @@ def fetch_coto():
         for product in productos:
             try:
                 # Extraer la marca (nombre pedido)
-                name_elem = product.find("div", class_="vtex-product-summary-2-x-productBrand vtex-product-summary-2-x-brandName t-body")
+                name_elem = product.find("div", class_="nombre-producto cursor-pointer")
                 name = name_elem.text.strip() if name_elem else "Sin nombre"
 
                 # Precio
-                price_elem = product.find("span", class_="vtex-product-price-1-x-sellingPrice")
+                price_elem = product.find("span", class_="card-title text-center mt-1 m-0 p-0 ng-star-inserted")
                 if not price_elem:
                     for span in product.find_all("span"):
                         if "sellingPrice" in " ".join(span.get("class", [])):
