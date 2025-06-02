@@ -115,65 +115,70 @@ def fetch_carrefour():
 
 
 #######################################################################
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
 def fetch_coto():
-    navegador = webdriver.Firefox()
-    print("[COTO] Iniciando extracción...")
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from bs4 import BeautifulSoup
+    from urllib.parse import urljoin
+
+    print("[coto] Iniciando extracción...")
     category_url = "https://www.cotodigital.com.ar/sitios/cdigi/categoria/catalogo-bebidas-bebidas-sin-alcohol-gaseosas/_/N-n4l4r5"
     results = []
 
-    try:
-        navegador.get(category_url)
+    navagador = webdriver.Firefox()
+    navagador.get(category_url)
 
-        # Esperar hasta que el contenedor esté presente (máx 15 segundos)
-        WebDriverWait(navegador, 15).until(
-            EC.presence_of_element_located((By.ID, "gallery-layout-container"))
+    try:
+        WebDriverWait(navagador, 20).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "productos"))
         )
 
-        soup = BeautifulSoup(navegador.page_source, "html.parser")
-        container = soup.find("div", _class="productos")
+        soup = BeautifulSoup(navagador.page_source, "html.parser")
+
+        container = soup.find("div", class_="productos")
 
         if not container:
-            print("[COTO] No se encontró el contenedor de productos.")
-            print(navegador.page_source)  # Para debug
+            print("[coto] No se encontró el contenedor de productos.")
+            navagador.quit()
             return []
 
-        productos = container.find_all("div", class_="product gtm-product ")
+        # Buscar productos dentro del contenedor
+        productos = container.find_all("div", class_="card-container")
 
-        if not productos:
-            print("[COTO] No se encontraron productos.")
-            return []
+        print(f"[coto] Productos encontrados: {len(productos)}")
 
         for product in productos:
             try:
-                name_elem = product.find("div", class_="description-product")
+                # Extraer la marca (nombre pedido)
+                name_elem = product.find("div", class_="vtex-product-summary-2-x-productBrand vtex-product-summary-2-x-brandName t-body")
                 name = name_elem.text.strip() if name_elem else "Sin nombre"
 
-                price_elem = product.find("span", class_="atg_store_newPrice")
+                # Precio
+                price_elem = product.find("span", class_="vtex-product-price-1-x-sellingPrice")
+                if not price_elem:
+                    for span in product.find_all("span"):
+                        if "sellingPrice" in " ".join(span.get("class", [])):
+                            price_elem = span
+                            break
                 price = price_elem.text.strip() if price_elem else "Sin precio"
 
+                # Link
                 link_elem = product.find("a", href=True)
                 relative_url = link_elem["href"] if link_elem else "#"
                 full_url = urljoin(category_url, relative_url)
 
-                results.append(["COTO", name, price, full_url])
+                results.append(["coto", name, price, full_url])
             except Exception as e:
-                print("Error extrayendo producto COTO:", e)
+                print("Error extrayendo producto coto:", e)
 
     except Exception as e:
-        print("[COTO] Error cargando la página:", e)
+        print("[coto] Error al cargar productos:", e)
 
-    finally:
-        navegador.quit()
-
+    navagador.quit()
     return results
-
 
 #######################################################################
 
@@ -190,8 +195,8 @@ def main():
     all_data = []
 
     #all_data.extend(fetch_dia())
-    all_data.extend(fetch_carrefour())
-    #all_data.extend(fetch_coto())
+    #all_data.extend(fetch_carrefour())
+    all_data.extend(fetch_coto())
 
     print(f"[MAIN] Total de registros: {len(all_data)}")
     save_to_csv(all_data)
