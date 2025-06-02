@@ -70,8 +70,7 @@ def fetch_carrefour():
 
         soup = BeautifulSoup(navagador.page_source, "html.parser")
 
-        # Buscar contenedor principal usando solo la clase "pr0"
-        container = soup.find("div", class_="pr0 items-stretch vtex-flex-layout-0-x-stretchChildrenWidth   flex")
+        container = soup.find("div", class_="valtech-carrefourar-search-result-3-x-loadingOverlay")
 
         if not container:
             print("[CARREFOUR] No se encontró el contenedor de productos.")
@@ -79,7 +78,7 @@ def fetch_carrefour():
             return []
 
         # Buscar productos dentro del contenedor
-        productos = container.find_all("div", class_="valtech-carrefourar-product-summary-status-0-x-container")
+        productos = container.find_all("section", class_="vtex-product-summary-2-x-container")
 
         print(f"[CARREFOUR] Productos encontrados: {len(productos)}")
 
@@ -138,7 +137,7 @@ def fetch_coto():
         )
 
         soup = BeautifulSoup(navegador.page_source, "html.parser")
-        container = soup.find(id="gallery-layout-container")
+        container = soup.find("div", _class="productos")
 
         if not container:
             print("[COTO] No se encontró el contenedor de productos.")
@@ -177,6 +176,7 @@ def fetch_coto():
 
 
 #######################################################################
+
 def save_to_csv(data, filename="precios_supermercados.csv"):
     if not data:
         print("[SAVE] No hay datos para guardar.")
@@ -189,9 +189,9 @@ def main():
     print("[MAIN] Iniciando extracción de precios...")
     all_data = []
 
-    all_data.extend(fetch_dia())
+    #all_data.extend(fetch_dia())
     all_data.extend(fetch_carrefour())
-    all_data.extend(fetch_coto())
+    #all_data.extend(fetch_coto())
 
     print(f"[MAIN] Total de registros: {len(all_data)}")
     save_to_csv(all_data)

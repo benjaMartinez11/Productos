@@ -1,9 +1,13 @@
 Supermercado,Producto,Precio,URL
-DIA,"Gaseosa Cola American 1,5 Lt.",$ 500,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,Gaseosa Coca-Cola Sabor Original 2 Lt.,$ 2.380,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,Gaseosa Coca-Cola Sabor Original 2.25 Lt.,$ 4.200,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,Gaseosa Coca-Cola Zero 2.25 Lt.,$ 4.200,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,"Gaseosa Cola Light Cunnington 2,25 Lt.",$ 1.645,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,"Gaseosa Cola Cunnington 2,25 Lt.",$ 1.730,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,"Gaseosa Coca-Cola Sabor Original 1,25 Lt.",$ 2.335,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
-DIA,Gaseosa Coca-Cola Sabor Original 500 Ml.,$ 1.800,https://diaonline.supermercadosdia.com.ar/bebidas/gaseosas/cola
+CARREFOUR,Sin nombre,"$ 2.790,00",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-zero-pet-15-lts-390893/p
+CARREFOUR,Sin nombre,"$ 2.745,00c/u",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-zero-225-lts-393964/p
+CARREFOUR,Sin nombre,"$ 2.790,00",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-light-15-lts-31006/p
+CARREFOUR,Sin nombre,"$ 3.150,00c/u",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-sabor-original-225-lts-30138/p
+CARREFOUR,Sin nombre,"$ 2.325,00c/u",https://www.carrefour.com.ar/gaseosa-cola-pepsi-black-pet-2-lts-746702/p
+CARREFOUR,Sin nombre,"$ 2.325,00c/u",https://www.carrefour.com.ar/gaseosa-cola-pepsi-regular-pet-2-lts-740265/p
+CARREFOUR,Sin nombre,"$ 1.645,00",https://www.carrefour.com.ar/gaseosa-cola-cunnington-suave-sin-tacc-225-lts-723483/p
+CARREFOUR,Sin nombre,"$ 1.983,75c/u",https://www.carrefour.com.ar/gaseosa-cola-pepsi-black-pet-15-lts-745262/p
+CARREFOUR,Sin nombre,"$ 1.730,00",https://www.carrefour.com.ar/gaseosa-cola-cunnington-classic-pet-225-lts-721460/p
+CARREFOUR,Sin nombre,"$ 2.335,00",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-sabor-original-125-lts-630679/p
+CARREFOUR,Sin nombre,"$ 3.150,00c/u",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-sabor-liviano-225-lts-159570/p
+CARREFOUR,Sin nombre,"$ 1.020,00c/u",https://www.carrefour.com.ar/gaseosa-cola-coca-cola-sabor-original-500-ml-44025/p
