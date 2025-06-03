@@ -85,7 +85,7 @@ def fetch_carrefour():
         for product in productos:
             try:
                 # Extraer la marca (nombre pedido)
-                name_elem = product.find("div", class_="vtex-product-summary-2-x-productBrand vtex-product-summary-2-x-brandName t-body")
+                name_elem = product.find("span", class_="vtex-product-summary-2-x-productBrand vtex-product-summary-2-x-brandName t-body")
                 name = name_elem.text.strip() if name_elem else "Sin nombre"
 
                 # Precio
@@ -132,7 +132,7 @@ def fetch_coto():
     navagador.get(category_url)
 
     try:
-        WebDriverWait(navagador, 20).until(
+        WebDriverWait(navagador, 15).until(
             EC.presence_of_element_located((By.CLASS_NAME, "productos"))
         )
 
@@ -153,11 +153,11 @@ def fetch_coto():
         for product in productos:
             try:
                 # Extraer la marca (nombre pedido)
-                name_elem = product.find("div", class_="nombre-producto cursor-pointer")
+                name_elem = product.find("h3", class_="nombre-producto cursor-pointer")
                 name = name_elem.text.strip() if name_elem else "Sin nombre"
 
                 # Precio
-                price_elem = product.find("span", class_="card-title text-center mt-1 m-0 p-0 ng-star-inserted")
+                price_elem = product.find("h4", class_="card-title text-center mt-1 m-0 p-0 ng-star-inserted")
                 if not price_elem:
                     for span in product.find_all("span"):
                         if "sellingPrice" in " ".join(span.get("class", [])):
@@ -194,8 +194,8 @@ def main():
     print("[MAIN] Iniciando extracción de precios...")
     all_data = []
 
-    #all_data.extend(fetch_dia())
-    #all_data.extend(fetch_carrefour())
+    all_data.extend(fetch_dia())
+    all_data.extend(fetch_carrefour())
     all_data.extend(fetch_coto())
 
     print(f"[MAIN] Total de registros: {len(all_data)}")
